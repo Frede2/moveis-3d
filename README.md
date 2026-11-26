@@ -3,3 +3,4 @@
 Móveis em 3D com realidade aumentada.
 
 - Cómoda Cerejeira: https://frede2.github.io/moveis-3d/
+- Cadeira de escritório em pele: https://frede2.github.io/moveis-3d/cadeira/
