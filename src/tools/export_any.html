@@ -1,0 +1,13 @@
+<!DOCTYPE html><html><head><meta charset="utf-8">
+<script type="importmap">{"imports":{"three":"./node_modules/three/build/three.module.js","three/addons/":"./node_modules/three/examples/jsm/"}}</script></head><body>
+<script type="module">
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { USDZExporter } from 'three/addons/exporters/USDZExporter.js';
+try {
+  const gltf = await new GLTFLoader().loadAsync(new URLSearchParams(location.search).get('src'));
+  const data = await new USDZExporter().parseAsync(gltf.scene, { quickLookCompatible: true });
+  let s = ''; const b = new Uint8Array(data);
+  for (let i = 0; i < b.length; i += 0x8000) s += String.fromCharCode.apply(null, b.subarray(i, i + 0x8000));
+  window.USDZ = btoa(s); document.title = 'done';
+} catch (e) { window.ERR = String(e); document.title = 'error'; }
+</script></body></html>
