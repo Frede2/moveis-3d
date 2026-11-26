@@ -30,9 +30,13 @@ button[aria-pressed=true]{background:var(--ink);color:var(--bg)}
 .hint{position:absolute;top:12px;left:50%;transform:translateX(-50%);font-size:13px;color:var(--muted);background:var(--panel);padding:4px 12px;border-radius:999px;border:1px solid var(--line);white-space:nowrap}
 .specs{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,170px),1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:12px;overflow:hidden}
 .spec{background:var(--panel);padding:14px 16px}
-.spec b{display:block;font:600 24px/1.1 "Inter Tight",sans-serif;white-space:nowrap}
+.spec b{display:block;font:600 clamp(18px,4.6vw,24px)/1.15 "Inter Tight",sans-serif;text-wrap:balance}
 .spec span{font-size:13px;color:var(--muted)}
 .note{font-size:13px;color:var(--muted);margin:14px 0 0}
+.fin{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px;align-items:center}
+.fin>span{font-size:14px;color:var(--muted);margin-right:4px}
+.fin button{display:inline-flex;align-items:center;gap:8px;padding:0 14px 0 8px}
+.fin i{width:26px;height:26px;border-radius:50%;border:1px solid var(--line);background-size:cover;flex:none}
 @media(max-width:600px){.tools{position:static;padding:10px}.ar{top:10px;bottom:auto;right:10px}.hint{display:none}}
 @media(prefers-reduced-motion:reduce){model-viewer{--progress-bar-height:0}}
 </style>
@@ -41,12 +45,13 @@ button[aria-pressed=true]{background:var(--ink);color:var(--bg)}
 <section class="band">
   <div class="head">
     <div>
-      <h1>Cómoda Cerejeira, em carvalho, em 3D</h1>
-      <p>Roda com o rato ou com o dedo e aproxima para ver o veio da madeira e o ripado. No telemóvel, "Ver na minha sala" coloca a cómoda no teu espaço, em tamanho real.</p>
+      <h1>Cómoda Cerejeira em 3D</h1>
+      <p>Roda com o rato ou com o dedo e aproxima para ver o veio da madeira e o ripado. Escolhe o acabamento. No telemóvel, "Ver na minha sala" coloca a cómoda no teu espaço, em tamanho real.</p>
     </div>
   </div>
+  <div class="fin" id="fin" role="group" aria-label="Acabamento"><span>Acabamento:</span></div>
   <div class="stage">
-    <model-viewer id="mv" src="comoda_cerejeira.glb" ios-src="comoda_cerejeira.usdz" alt="Modelo 3D de uma cómoda de três gavetas em carvalho natural, com frentes em ripado, puxadores pretos e um ramo de cerejeira em flor pintado nas laterais"
+    <model-viewer id="mv" src="comoda_natural.glb" ios-src="comoda_natural.usdz" alt="Modelo 3D de uma cómoda de três gavetas com frentes em ripado, em cinco acabamentos, e um ramo de cerejeira em flor pintado nas laterais"
       camera-controls touch-action="pan-y" auto-rotate auto-rotate-delay="1500" rotation-per-second="18deg"
       camera-orbit="30deg 76deg 2.3m" min-camera-orbit="auto 10deg auto" max-camera-orbit="auto 95deg 4m"
       shadow-intensity="1.1" shadow-softness="0.8" exposure="1.05" environment-image="neutral"
@@ -74,12 +79,35 @@ button[aria-pressed=true]{background:var(--ink);color:var(--bg)}
     ["88 cm", "Altura total"],
     ["42 cm", "Profundidade"],
     ["3 gavetas", "Frentes em ripado"],
-    ["Carvalho natural", "Acabamento acetinado"],
+    ["Carvalho natural", "Acabamento"],
     ["Cerejeira em flor", "Pintada nas duas laterais"]
   ];
   document.getElementById("specs").innerHTML = specs.map(([v, l]) => `<div class="spec"><b>${v}</b><span>${l}</span></div>`).join("");
 
   const mv = document.getElementById("mv");
+  // finishes: same model, different wood / lacquer and handles
+  const finishes = [
+    ["natural", "Carvalho natural", "#b98a5c", "puxadores pretos"],
+    ["fumado", "Carvalho fumado", "#6a4630", "puxadores latão"],
+    ["nordico", "Carvalho nórdico", "#e4ddd2", "puxadores pretos"],
+    ["cerejeira", "Tom cerejeira", "#a4512a", "puxadores latão"],
+    ["salvia", "Verde-sálvia + carvalho", "linear-gradient(90deg,#9fae98 55%,#b98a5c 55%)", "puxadores latão"]
+  ];
+  const fin = document.getElementById("fin");
+  finishes.forEach(([k, name, sw, metal], i) => {
+    const b = document.createElement("button");
+    b.setAttribute("aria-pressed", String(i === 0));
+    b.innerHTML = `<i style="background:${sw}"></i>${name}`;
+    b.addEventListener("click", () => {
+      fin.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", "false"));
+      b.setAttribute("aria-pressed", "true");
+      mv.src = `comoda_${k}.glb`;
+      mv.setAttribute("ios-src", `comoda_${k}.usdz`);
+      const sp = document.querySelectorAll("#specs .spec")[4];
+      sp.innerHTML = `<b>${name}</b><span>Acabamento, ${metal}</span>`;
+    });
+    fin.appendChild(b);
+  });
   const spin = document.getElementById("spin");
   spin.addEventListener("click", () => {
     const on = spin.getAttribute("aria-pressed") !== "true";
@@ -106,7 +134,7 @@ button[aria-pressed=true]{background:var(--ink);color:var(--bg)}
     const p = (x, y, z) => `${x.toFixed(3)}m ${y.toFixed(3)}m ${z.toFixed(3)}m`;
     mk("hotspot-w", p(c.x, c.y + d.y / 2 + 0.03, c.z + d.z / 2), `${Math.round(d.x * 100)} cm de largura`);
     mk("hotspot-h", p(c.x + d.x / 2 + 0.04, c.y, c.z), `${Math.round(d.y * 100)} cm de altura`);
-    mk("hotspot-d", p(c.x - d.x / 2, c.y - d.y / 2 + 0.02, c.z), `${Math.round(d.z * 100)} cm de profundidade`);
+    mk("hotspot-d", p(c.x - d.x / 2, c.y - d.y / 2 + 0.02, c.z), `42 cm de profundidade (${Math.round(d.z * 100)} cm com os pés)`);
   };
   dims.addEventListener("click", () => {
     shown = !shown;
