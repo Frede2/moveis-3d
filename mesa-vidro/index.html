@@ -50,7 +50,7 @@ button[aria-pressed=true]{background:var(--ink);color:var(--bg)}
     </div>
   </div>
   <div class="stage">
-    <model-viewer id="mv" src="mesa_vidro.glb" ios-src="mesa_vidro.usdz" alt="Modelo 3D de uma mesa de centro com tampo de vidro fumado de 8 mm sobre dois quadros trapezoidais em aço pintado a preto, ligados por uma barra junto ao chão"
+    <model-viewer id="mv" src="mesa_vidro.glb?v=2" ios-src="mesa_vidro.usdz?v=2" alt="Modelo 3D de uma mesa de centro com tampo de vidro fumado de 8 mm sobre dois quadros trapezoidais em aço pintado a preto, ligados por uma barra junto ao chão"
       camera-controls touch-action="pan-y" auto-rotate auto-rotate-delay="1500" rotation-per-second="18deg"
       camera-orbit="30deg 68deg 2.6m" min-camera-orbit="auto 10deg auto" max-camera-orbit="auto 95deg 4m"
       shadow-intensity="1.1" shadow-softness="0.8" exposure="1.05" environment-image="neutral"
@@ -91,7 +91,7 @@ button[aria-pressed=true]{background:var(--ink);color:var(--bg)}
       if (mv.src.includes("mesa_vidro_ar")) return;
       e.stopImmediatePropagation(); e.preventDefault();
       mv.addEventListener("load", () => mv.activateAR(), { once: true });
-      mv.src = "mesa_vidro_ar.glb";
+      mv.src = "mesa_vidro_ar.glb?v=2";
     }, true);
   }
   const spin = document.getElementById("spin");

@@ -134,7 +134,10 @@ def glass_top():
     Fc[flip] = Fc[flip][:, ::-1]
     m = trimesh.Trimesh(V, Fc, vertex_normals=N, process=False)
     m.apply_translation([0, GLASS_Y + GT / 2, 0])
-    return m
+    flat = np.abs(N[Fc].mean(1)[:, 1]) > 0.98          # top / bottom faces
+    faces = m.submesh([np.where(flat)[0]], append=True)
+    edge = m.submesh([np.where(~flat)[0]], append=True)
+    return faces, edge
 
 
 # ---------------------------------------------------------------- geometry
@@ -179,14 +182,20 @@ for s in (-1, 1):
     for sz in (-1, 1):
         p = pad.copy(); p.apply_translation([s * FX, FY + PAD / 2, sz * (TOP_HALF - BAR_W / 2)])
         parts.append((f"batente_{s}_{sz}", p, "pad"))
-parts.append(("tampo_vidro", glass_top(), "glass"))
+g_faces, g_edge = glass_top()
+parts.append(("tampo_vidro", g_faces, "glass"))
+parts.append(("tampo_vidro_borda", g_edge, "glass_edge"))
 
-STEEL = PBRMaterial(name="aco_pintado_preto", baseColorFactor=lin(22, 22, 23), metallicFactor=0.0, roughnessFactor=0.38)
+STEEL = PBRMaterial(name="aco_pintado_preto", baseColorFactor=lin(26, 26, 27), metallicFactor=0.0, roughnessFactor=0.45)
 FELT = PBRMaterial(name="feltro", baseColorFactor=lin(40, 40, 40), metallicFactor=0.0, roughnessFactor=0.95)
 PADM = PBRMaterial(name="silicone", baseColorFactor=[0.6, 0.6, 0.6, 0.25], metallicFactor=0.0, roughnessFactor=0.3, alphaMode="BLEND")
-GLASS = PBRMaterial(name="vidro_fumado", baseColorFactor=[0.24, 0.25, 0.25, 0.70], metallicFactor=0.0, roughnessFactor=0.03,
+# AR fallback: dark tint + low alpha reads as smoked glass (a light grey reads as milky plastic)
+GLASS = PBRMaterial(name="vidro_fumado", baseColorFactor=[0.015, 0.018, 0.018, 0.50], metallicFactor=0.0, roughnessFactor=0.0,
                     alphaMode="BLEND", doubleSided=False)
-MATS = {"steel": STEEL, "felt": FELT, "pad": PADM, "glass": GLASS}
+# polished 8 mm edge: looks dark green-grey and almost opaque, the main cue that it is real glass
+EDGE = PBRMaterial(name="vidro_borda", baseColorFactor=[0.045, 0.075, 0.068, 0.93], metallicFactor=0.0, roughnessFactor=0.05,
+                   alphaMode="BLEND")
+MATS = {"steel": STEEL, "felt": FELT, "pad": PADM, "glass": GLASS, "glass_edge": EDGE}
 
 
 def export(path):
@@ -226,6 +235,15 @@ def add_transmission(js):
                 "KHR_materials_transmission": {"transmissionFactor": 1.0},
                 "KHR_materials_volume": {"thicknessFactor": GT, "attenuationDistance": 0.007,
                                           "attenuationColor": [0.30, 0.31, 0.31]},
+                "KHR_materials_ior": {"ior": 1.52},
+            }
+        if m.get("name") == "vidro_borda":
+            m["pbrMetallicRoughness"]["baseColorFactor"] = [0.30, 0.42, 0.39, 1.0]
+            m["alphaMode"] = "OPAQUE"
+            m["extensions"] = {
+                "KHR_materials_transmission": {"transmissionFactor": 0.6},
+                "KHR_materials_volume": {"thicknessFactor": 0.05, "attenuationDistance": 0.02,
+                                          "attenuationColor": [0.22, 0.32, 0.29]},
                 "KHR_materials_ior": {"ior": 1.52},
             }
 
