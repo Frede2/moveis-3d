@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Cómoda Cerejeira</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@600&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* VOICE: showroom de fábrica, calmo e preciso.
+   IDEA: uma montra de loja de móveis — o produto em destaque sobre um chão.
+   PICTURE: o próprio modelo 3D, grande, que se roda com o dedo.
+   COLOUR and TYPE: aço claro #d5dbe0, preto, branco, vermelho de alarme só no botão AR; Inter Tight + Inter.
+   LAYOUT: visualizador a ocupar o ecrã, ficha técnica em faixa por baixo. */
+:root{color-scheme:light dark;--bg:light-dark(#d5dbe0,#16191c);--panel:light-dark(#eef1f3,#1f2327);--ink:light-dark(#0d0f11,#f2f4f5);--muted:light-dark(#4a535b,#a9b1b8);--line:light-dark(#b7c0c7,#2e3439);--accent:#e8251a}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 Inter,system-ui,sans-serif;overflow-x:clip}
+h1{font:600 clamp(30px,4.4vw,46px)/1.05 "Inter Tight",Inter,sans-serif;margin:0 0 6px;text-wrap:balance}
+.band{padding:clamp(20px,3vw,40px) max(5vw,16px)}
+.head{display:flex;flex-wrap:wrap;gap:12px 24px;align-items:end;justify-content:space-between}
+.head p{margin:0;color:var(--muted);max-width:60ch}
+.stage{position:relative;margin-top:18px;border-radius:14px;overflow:hidden;background:radial-gradient(120% 90% at 50% 20%,light-dark(#ffffff,#2a3036) 0%,var(--panel) 55%,light-dark(#c9d0d6,#121417) 100%);border:1px solid var(--line)}
+model-viewer{width:100%;height:clamp(380px,68vh,720px);--poster-color:transparent;background:transparent}
+.tools{position:absolute;left:14px;bottom:14px;display:flex;flex-wrap:wrap;gap:8px}
+button{font:500 15px Inter,sans-serif;min-height:44px;padding:0 16px;border-radius:10px;border:1px solid var(--line);background:var(--panel);color:var(--ink);cursor:pointer}
+button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+button[aria-pressed=true]{background:var(--ink);color:var(--bg)}
+.ar{position:absolute;right:14px;bottom:14px;background:var(--accent);color:#fff;border-color:var(--accent)}
+.hint{position:absolute;top:12px;left:50%;transform:translateX(-50%);font-size:13px;color:var(--muted);background:var(--panel);padding:4px 12px;border-radius:999px;border:1px solid var(--line);white-space:nowrap}
+.specs{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,170px),1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.spec{background:var(--panel);padding:14px 16px}
+.spec b{display:block;font:600 clamp(18px,4.6vw,24px)/1.15 "Inter Tight",sans-serif;text-wrap:balance}
+.spec span{font-size:13px;color:var(--muted)}
+.note{font-size:13px;color:var(--muted);margin:14px 0 0}
+.fin{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px;align-items:center}
+.fin>span{font-size:14px;color:var(--muted);margin-right:4px}
+.fin button{display:inline-flex;align-items:center;gap:8px;padding:0 14px 0 8px}
+.fin i{width:26px;height:26px;border-radius:50%;border:1px solid var(--line);background-size:cover;flex:none}
+@media(max-width:600px){.tools{position:static;padding:10px}.ar{top:10px;bottom:auto;right:10px}.hint{display:none}}
+@media(prefers-reduced-motion:reduce){model-viewer{--progress-bar-height:0}}
+.back{display:inline-block;font-size:14px;color:var(--muted);text-decoration:none;margin-bottom:6px}.back:hover{color:var(--ink)}
+</style>
+</head>
+<body>
+<section class="band">
+  <div class="head">
+    <div>
+      <a class="back" href="../">← Catálogo</a>
+      <h1>Cómoda Cerejeira em 3D</h1>
+      <p>Roda com o rato ou com o dedo e aproxima para ver o veio da madeira e o ripado. Escolhe o acabamento. No telemóvel, "Ver na minha sala" coloca a cómoda no teu espaço, em tamanho real.</p>
+    </div>
+  </div>
+  <div class="fin" id="fin" role="group" aria-label="Acabamento"><span>Acabamento:</span></div>
+  <div class="stage">
+    <model-viewer id="mv" src="comoda_natural.glb" ios-src="comoda_natural.usdz" alt="Modelo 3D de uma cómoda de três gavetas com frentes em ripado, em cinco acabamentos, e um ramo de cerejeira em flor pintado nas laterais"
+      camera-controls touch-action="pan-y" auto-rotate auto-rotate-delay="1500" rotation-per-second="18deg"
+      camera-orbit="30deg 76deg 2.3m" min-camera-orbit="auto 10deg auto" max-camera-orbit="auto 95deg 4m"
+      shadow-intensity="1.1" shadow-softness="0.8" exposure="1.05" environment-image="neutral"
+      ar ar-modes="webxr scene-viewer quick-look" ar-scale="fixed" ar-placement="floor">
+      <button slot="ar-button" class="ar">Ver na minha sala</button>
+    </model-viewer>
+    <span class="hint">Arrasta para rodar · roda do rato para aproximar</span>
+    <div class="tools">
+      <button id="spin" aria-pressed="true">Rotação automática</button>
+      <button id="front">Frente</button>
+      <button id="side">Lateral pintada</button>
+      <button id="dims" aria-pressed="false">Medidas</button>
+    </div>
+  </div>
+</section>
+<section class="band" style="padding-top:0">
+  <div class="specs" id="specs"></div>
+  <p class="note">Design original, criado só com código para demonstração. As medidas são as do próprio modelo e servem para a realidade aumentada em tamanho real. · <a href="../mesa-vidro/">Mesa de centro em vidro →</a></p>
+</section>
+<script type="module" src="https://unpkg.com/@google/model-viewer@3.5.0/dist/model-viewer.min.js"></script>
+<script>
+{
+  const specs = [
+    ["80 cm", "Largura"],
+    ["88 cm", "Altura total"],
+    ["42 cm", "Profundidade"],
+    ["3 gavetas", "Frentes em ripado"],
+    ["Carvalho natural", "Acabamento"],
+    ["Cerejeira em flor", "Pintada nas duas laterais"]
+  ];
+  document.getElementById("specs").innerHTML = specs.map(([v, l]) => `<div class="spec"><b>${v}</b><span>${l}</span></div>`).join("");
+
+  const mv = document.getElementById("mv");
+  // finishes: same model, different wood / lacquer and handles
+  const finishes = [
+    ["natural", "Carvalho natural", "#b98a5c", "puxadores pretos"],
+    ["fumado", "Carvalho fumado", "#6a4630", "puxadores latão"],
+    ["nordico", "Carvalho nórdico", "#e4ddd2", "puxadores pretos"],
+    ["cerejeira", "Tom cerejeira", "#a4512a", "puxadores latão"],
+    ["salvia", "Verde-sálvia + carvalho", "linear-gradient(90deg,#9fae98 55%,#b98a5c 55%)", "puxadores latão"]
+  ];
+  const fin = document.getElementById("fin");
+  finishes.forEach(([k, name, sw, metal], i) => {
+    const b = document.createElement("button");
+    b.setAttribute("aria-pressed", String(i === 0));
+    b.innerHTML = `<i style="background:${sw}"></i>${name}`;
+    b.addEventListener("click", () => {
+      fin.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", "false"));
+      b.setAttribute("aria-pressed", "true");
+      mv.src = `comoda_${k}.glb`;
+      mv.setAttribute("ios-src", `comoda_${k}.usdz`);
+      const sp = document.querySelectorAll("#specs .spec")[4];
+      sp.innerHTML = `<b>${name}</b><span>Acabamento, ${metal}</span>`;
+    });
+    fin.appendChild(b);
+  });
+  const spin = document.getElementById("spin");
+  spin.addEventListener("click", () => {
+    const on = spin.getAttribute("aria-pressed") !== "true";
+    spin.setAttribute("aria-pressed", String(on));
+    on ? mv.setAttribute("auto-rotate", "") : mv.removeAttribute("auto-rotate");
+  });
+  const view = (orbit) => { spin.setAttribute("aria-pressed", "false"); mv.removeAttribute("auto-rotate"); if (mv.resetTurntableRotation) mv.resetTurntableRotation(0); mv.cameraOrbit = orbit; };
+  document.getElementById("front").addEventListener("click", () => view("0deg 82deg 2.2m"));
+  document.getElementById("side").addEventListener("click", () => view("90deg 84deg 2.5m"));
+
+  // Dimension lines drawn as hotspots on the model's bounding box
+  const dims = document.getElementById("dims");
+  let shown = false;
+  const addDims = () => {
+    if (!mv.getDimensions) return;
+    const d = mv.getDimensions(), c = mv.getBoundingBoxCenter();
+    const mk = (slot, pos, text) => {
+      const b = document.createElement("div");
+      b.slot = slot; b.dataset.position = pos; b.className = "dimlbl";
+      b.textContent = text;
+      b.style.cssText = "font:600 13px Inter,sans-serif;background:var(--ink);color:var(--bg);padding:3px 8px;border-radius:6px;white-space:nowrap;pointer-events:none";
+      mv.appendChild(b);
+    };
+    const p = (x, y, z) => `${x.toFixed(3)}m ${y.toFixed(3)}m ${z.toFixed(3)}m`;
+    mk("hotspot-w", p(c.x, c.y + d.y / 2 + 0.03, c.z + d.z / 2), `${Math.round(d.x * 100)} cm de largura`);
+    mk("hotspot-h", p(c.x + d.x / 2 + 0.04, c.y, c.z), `${Math.round(d.y * 100)} cm de altura`);
+    mk("hotspot-d", p(c.x - d.x / 2, c.y - d.y / 2 + 0.02, c.z), `42 cm de profundidade (${Math.round(d.z * 100)} cm com os pés)`);
+  };
+  dims.addEventListener("click", () => {
+    shown = !shown;
+    dims.setAttribute("aria-pressed", String(shown));
+    if (shown) addDims(); else mv.querySelectorAll(".dimlbl").forEach(e => e.remove());
+  });
+}
+</script>
+</body>
+</html>

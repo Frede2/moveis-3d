@@ -39,12 +39,14 @@ button[aria-pressed=true]{background:var(--ink);color:var(--bg)}
 .fin i{width:26px;height:26px;border-radius:50%;border:1px solid var(--line);background-size:cover;flex:none}
 @media(max-width:600px){.tools{position:static;padding:10px}.ar{top:10px;bottom:auto;right:10px}.hint{display:none}}
 @media(prefers-reduced-motion:reduce){model-viewer{--progress-bar-height:0}}
+.back{display:inline-block;font-size:14px;color:var(--muted);text-decoration:none;margin-bottom:6px}.back:hover{color:var(--ink)}
 </style>
 </head>
 <body>
 <section class="band">
   <div class="head">
     <div>
+      <a class="back" href="../">← Catálogo</a>
       <h1>Mesa de centro em raiz de teca</h1>
       <p>Roda com o rato ou com o dedo e aproxima: vê a raiz através do vidro e os anéis da madeira nos cortes. No telemóvel, "Ver na minha sala" coloca a mesa no teu espaço, em tamanho real.</p>
     </div>
@@ -68,7 +70,7 @@ button[aria-pressed=true]{background:var(--ink);color:var(--bg)}
 </section>
 <section class="band" style="padding-top:0">
   <div class="specs" id="specs"></div>
-  <p class="note"><a href="../">← Cómoda Cerejeira</a> · <a href="../mesa-vidro/">Mesa de vidro fumado</a></p>
+  <p class="note"><a href="../comoda/">← Cómoda Cerejeira</a> · <a href="../mesa-vidro/">Mesa de vidro fumado</a></p>
 </section>
 <script type="module" src="https://unpkg.com/@google/model-viewer@3.5.0/dist/model-viewer.min.js"></script>
 <script>
