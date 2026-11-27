@@ -1,6 +1,7 @@
 """Shrink a USDZ from three.js: PNG textures -> JPEG, keep 64-byte alignment (required by USDZ).
 Usage: python3 shrink_usdz.py in.usdz out.usdz [quality]"""
 import io
+import re
 import sys
 import zipfile
 from PIL import Image
@@ -24,9 +25,12 @@ def shrink(src, dst, q=85):
             renames[name] = new
             name, data = new, b.getvalue()
         files[name] = data
+    num = re.compile(r"-?\d+\.\d{5,}(?:e-?\d+)?")
     for name in list(files):
         if name.endswith(".usda"):
             txt = files[name].decode("utf-8")
+            # 4 decimals = 0.1 mm for positions, plenty for normals/UVs
+            txt = num.sub(lambda m: ("%.4f" % float(m.group())).rstrip("0").rstrip("."), txt)
             for old, new in renames.items():
                 txt = txt.replace(old, new)
             files[name] = txt.encode("utf-8")
